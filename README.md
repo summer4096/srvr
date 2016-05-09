@@ -90,7 +90,7 @@ let app = srvr([
 
 ## express middleware
 
-Most middleware that works with express should work with SRVR.
+Most middleware that works with express should work with srvr.
 
 To use middleware globally,
 
