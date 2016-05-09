@@ -1,0 +1,25 @@
+{
+  "name": "srvr",
+  "version": "0.1.0",
+  "description": "a little http server",
+  "main": "src/index.js",
+  "author": "Tristan Davies <npm@tristan.io>",
+  "scripts": {
+    "lint": "standard src/**/*.js",
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/devTristan/srvr.git"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "devDependencies": {
+    "git-validate": "^2.1.4",
+    "standard": "^6.0.8",
+    "supertest": "^1.2.0",
+    "tape": "^4.5.1"
+  }
+}
