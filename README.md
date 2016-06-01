@@ -74,6 +74,27 @@ let app = srvr([
 ])
 ```
 
+## error pages
+
+do custom error pages like this
+
+```js
+let app = srvr([
+  [404, function (req, res) {
+    return 'page not found :('
+  }],
+  [500, function (req, res) {
+    if (process.env.NODE_ENV === 'production') {
+      ErrorReporter.track(res.err) // imaginary error reporter
+      return 'An unknown error occurred'
+    } else {
+      console.error(res.err)
+      return res.err.stack
+    }
+  }]
+])
+```
+
 ## errors
 
 Throwing an error will send a 500 unless it has the statusCode property set.

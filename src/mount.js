@@ -1,12 +1,18 @@
 module.exports = mount
 
+function startsWith (str, sub) {
+  return str.slice(0, sub.length) === sub
+}
+
 function mount (base, serve) {
-  if (!base.startsWith('/')) {
+  if (!startsWith(base, '/')) {
     base = '/' + base
   }
 
   var matcher = {
-    exec: (route) => route.replace(/^[a-z]+ /i, '').startsWith(base) ? [] : null
+    exec: function (route) {
+      return startsWith(route.replace(/^[a-z]+ /i, ''), base) ? [] : null
+    }
   }
 
   return [matcher, function (req, res, callback) {

@@ -16,8 +16,10 @@ function router (routes, middlewares) {
       assert(Array.isArray(route), 'should be array')
       var path = route[0]
       var responder = route.slice(1)
-      if (typeof path === 'string' || typeof path === 'number') {
+      if (typeof path === 'string') {
         exactRoutes[path] = responder
+      } else if (typeof path === 'number') {
+        codeRoutes[path] = responder
       } else if (typeof path === 'object' && typeof path.exec === 'function') {
         fuzzyRoutes.push(route)
       } else {
@@ -81,7 +83,6 @@ function router (routes, middlewares) {
       })
     } catch (err) {
       // handle sync errors
-      console.log(err.stack)
       res.error = err
       sendError(req, res, err, codeRoutes)
     }
@@ -153,7 +154,9 @@ function sendError (req, res, err, codeRoutes, code, message) {
     message = err.stack || err
   }
   if (codeRoutes[code]) {
-    codeRoutes[code](req, res, err)
+    consume(codeRoutes[code], req, res, {}, function (err) {
+      if (err) sendError(req, res, err, {})
+    })
   } else {
     if (!res.headersSent) {
       res.writeHead(code, {

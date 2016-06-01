@@ -4,7 +4,7 @@ var assert = require('assert')
 
 module.exports = server
 
-var modules = ['log', 'static', 'length', 'favicon', 'redirect', 'mount', 'router', 'cookie', 'file', 'header']
+var modules = ['log', 'static', 'size', 'favicon', 'redirect', 'mount', 'router', 'cookie', 'file', 'header']
 
 modules.forEach(function (mod) {
   Object.defineProperty(server, mod, {

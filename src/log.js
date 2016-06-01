@@ -1,9 +1,9 @@
-var length = require('./length')
+var size = require('./size')
 
 module.exports = log
 
 function log (req, res, callback) {
-  length(req, res, function (err) {
+  size(req, res, function (err) {
     if (err) return callback(err)
 
     res.on('finish', write.bind(null, req, res))
@@ -26,7 +26,7 @@ function write (req, res) {
   var url = req._originalUrl || req.url
   var statusCode = res.statusCode
   var ip = req.connection.remoteAddress
-  var size = filesize(res.length)
+  var size = filesize(res.size)
   var stack = res.error && (res.error.stack || res.error)
   var line = [method, url, statusCode, ip, elapsed + 'ms', size]
   if (res.metadata && res.metadata.length) line = line.concat(res.metadata)
