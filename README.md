@@ -113,7 +113,7 @@ let app = srvr([
 
 Most middleware that works with express should work with srvr.
 
-To use middleware globally,
+To use middleware globally, put it in the middleware parameter after the routes.
 
 ```js
 import bodyParser from 'body-parser'
