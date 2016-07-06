@@ -85,11 +85,11 @@ let app = srvr([
   }],
   [500, function (req, res) {
     if (process.env.NODE_ENV === 'production') {
-      ErrorReporter.track(res.err) // imaginary error reporter
+      ErrorReporter.track(res.error) // imaginary error reporter
       return 'An unknown error occurred'
     } else {
-      console.error(res.err)
-      return res.err.stack
+      console.error(res.error)
+      return res.error.stack
     }
   }]
 ])

@@ -73,7 +73,6 @@ function router (routes, middlewares) {
 
       consume(middlewares.concat(match), req, res, codeRoutes, function onConsumeFinished (err) {
         if (err) {
-          console.log(err.stack)
           res.error = err
           sendError(req, res, err, codeRoutes)
         } else if (res.statusCode && !res.headersSent) {
