@@ -1,4 +1,5 @@
 var assert = require('assert')
+var ServerResponse = require('http').ServerResponse
 var statusCodes = require('./statusCodes')
 
 module.exports = router
@@ -6,6 +7,8 @@ module.exports = router
 function router (routes, middlewares) {
   var exactRoutes = {}
   var fuzzyRoutes = []
+  var websocketExactRoutes = {}
+  var websocketFuzzyRoutes = []
   var codeRoutes = {}
   middlewares = middlewares || []
 
@@ -16,7 +19,18 @@ function router (routes, middlewares) {
       assert(Array.isArray(route), 'should be array')
       var path = route[0]
       var responder = route.slice(1)
-      if (typeof path === 'string') {
+
+      if (typeof responder[0] === 'object' && typeof responder[0].handleUpgrade === 'function') {
+        // websocket support
+        assert.equal(responder.length, 1, 'websocket endpoints should only have one responder')
+        if (typeof path === 'string') {
+          websocketExactRoutes[path] = responder
+        } else if (typeof path === 'object' && typeof path.exec === 'function') {
+          websocketFuzzyRoutes[path] = responder
+        } else {
+          throw new Error('Invalid websocket route: expected first element to be string or regex')
+        }
+      } else if (typeof path === 'string') {
         exactRoutes[path] = responder
       } else if (typeof path === 'number') {
         codeRoutes[path] = responder
@@ -46,19 +60,27 @@ function router (routes, middlewares) {
     }
   }
 
-  return function routeRequest (req, res) {
+  return function routeRequest (req, res, isWebsocket, upgradeHead) {
     var route = req.method.toUpperCase() + ' ' + req.parsedUrl.pathname
 
     var match
     try {
+      var protocolRoutes = isWebsocket ? {
+        exact: websocketExactRoutes,
+        fuzzy: websocketFuzzyRoutes
+      } : {
+        exact: exactRoutes,
+        fuzzy: fuzzyRoutes
+      }
+
       // look for exact matches
-      if (exactRoutes[route]) {
-        match = exactRoutes[route]
+      if (protocolRoutes.exact[route]) {
+        match = protocolRoutes.exact[route]
       } else {
         // look for regex matches
         var hit
-        for (var k = 0; k < fuzzyRoutes.length; k++) {
-          var fuzzyRoute = fuzzyRoutes[k]
+        for (var k = 0; k < protocolRoutes.fuzzy.length; k++) {
+          var fuzzyRoute = protocolRoutes.fuzzy[k]
           var params = fuzzyRoute[0].exec(route)
           if (params) {
             hit = true
@@ -69,6 +91,15 @@ function router (routes, middlewares) {
         }
         // give up and 404
         if (!hit) match = [404]
+      }
+
+      if (isWebsocket) {
+        if (match[0] === 404) {
+          res.end()
+        } else {
+          match[0].handleUpgrade(req, res, upgradeHead)
+        }
+        return
       }
 
       consume(middlewares.concat(match), req, res, codeRoutes, function onConsumeFinished (err) {
@@ -139,7 +170,9 @@ function consume (item, req, res, codeRoutes, callback, i, err, result) {
       }
     } else if (type === 'object') {
       var json = JSON.stringify(item)
-      if (!res.headersSent) res.setHeader('Content-Type', 'application/json')
+      if (!res.headersSent) {
+        res.setHeader('Content-Type', 'application/json')
+      }
       next(null, json)
     }
   } catch (err) {
@@ -148,6 +181,12 @@ function consume (item, req, res, codeRoutes, callback, i, err, result) {
 }
 
 function sendError (req, res, err, codeRoutes, code, message) {
+  // bail out on websockets
+  if (!(res instanceof ServerResponse)) {
+    res.end()
+    return
+  }
+
   if (typeof err === 'object' && err !== null) {
     code = err.statusCode || 500
     message = err.stack || err

@@ -1,4 +1,4 @@
-var srvr = require('./src')
+var srvr = require('./')
 var fs = require('fs')
 
 srvr([

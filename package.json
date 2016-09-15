@@ -1,6 +1,6 @@
 {
   "name": "srvr",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "a little http server",
   "main": "src/index.js",
   "author": "Tristan Davies <npm@tristan.io>",
@@ -20,6 +20,7 @@
     "git-validate": "^2.1.4",
     "standard": "^6.0.8",
     "supertest": "^1.2.0",
-    "tape": "^4.5.1"
+    "tape": "^4.5.1",
+    "ws": "^1.1.1"
   }
 }

@@ -6,6 +6,7 @@ a little http server
  * better
  * less code
  * no dependencies
+ * websockets
 
 ```console
 npm install --save srvr
@@ -226,6 +227,28 @@ the same options
 let app = srvr([
 
   srvr.static('/', './public')
+
+])
+```
+
+## websockets
+
+Depends on [ws](https://www.npmjs.com/package/ws)
+
+Note: websocket responders will NOT accept any middleware, because middleware
+is almost always written for HTTP requests only.
+
+```js
+let app = srvr([
+
+  ['GET /ws', srvr.websocket((req, client) => {
+
+    client.send('Hello!')
+    client.on('message', (data) => {
+      console.log(`got message ${data}`)
+    })
+
+  })]
 
 ])
 ```

@@ -1,5 +1,6 @@
 var test = require('tape')
 var req = require('supertest')
+var WebSocket = require('ws')
 var joinPath = require('path').join
 var srvr = require('..')
 var readFileSync = require('fs').readFileSync
@@ -12,7 +13,7 @@ test('smoke', function (t) {
   req(app).get('/').expect(404).end(t.end)
 })
 
-test('behavior', function (t) {
+test('behavior', function (mainTest) {
   var incomprehensibleError = new Error('wat')
 
   var testApp = srvr([
@@ -41,14 +42,18 @@ test('behavior', function (t) {
     ['GET /readme-download', srvr.file.download('README.md')],
     ['GET /incomprehensible', 501],
     [500, 'it is broken :('],
-    [501, function () { throw incomprehensibleError }]
+    [501, function () { throw incomprehensibleError }],
+    ['GET /websocket', srvr.websocket(function onConn (req, client) {
+      client.send(req.headers.websocket_test)
+      client.on('message', (d) => client.send(d))
+    })]
   ], [])
 
   function subtest (name, fn) {
-    t.test(name, function (t2) {
+    mainTest.test(name, function (t) {
       fn(req(testApp)).end(function (err) {
-        t2.error(err, 'should not fail')
-        t2.end()
+        t.error(err, 'should not fail')
+        t.end()
       })
     })
   }
@@ -166,5 +171,38 @@ test('behavior', function (t) {
       .expect(500, incomprehensibleError.stack)
       .expect('Content-Type', 'text/plain')
       .expect('Content-Length', incomprehensibleError.stack.length)
+  })
+
+  mainTest.test('GET /websocket', function (t) {
+    var addr = testApp.address()
+    var port
+
+    if (!addr) testApp.listen(0)
+    port = testApp.address().port
+
+    var url = 'ws://127.0.0.1:' + port + '/websocket'
+
+    var socket = new WebSocket(url, {
+      headers: {
+        websocket_test: 'beep boop'
+      }
+    })
+
+    t.plan(4)
+
+    var saidHello = false
+
+    socket.on('open', () => t.pass('open'))
+    socket.on('message', (data) => {
+      if (!saidHello) {
+        t.equal(data, 'beep boop', 'header')
+        saidHello = true
+        socket.send('bip bap')
+      } else {
+        t.equal(data, 'bip bap', 'echo')
+        socket.close()
+        testApp.close(() => t.pass('close'))
+      }
+    })
   })
 })

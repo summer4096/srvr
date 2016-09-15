@@ -4,8 +4,15 @@ function size (req, res, next) {
   if (typeof req.size !== 'undefined') return next()
 
   res.size = 0
+
+  var socket
   if (res.socket && res.socket.write) {
-    var socket = res.socket
+    socket = res.socket
+  } else if (res.write) {
+    socket = res
+  }
+
+  if (socket) {
     var realWrite = socket.write.bind(socket)
     socket.write = function write (chunk, encoding, callback) {
       if (typeof chunk === 'string' || chunk instanceof Buffer) res.size += chunk.length
