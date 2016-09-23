@@ -142,6 +142,7 @@ function consume (item, req, res, codeRoutes, callback, i, err, result) {
       res.statusCode = item
       callback()
     } else if (type === 'string' || item instanceof Buffer) {
+      if (type === 'string') item = new Buffer(item, 'utf8')
       if (!res.headersSent) {
         res.writeHead(res.statusCode || 200, {
           'Content-Type': res.getHeader('Content-Type') || 'text/plain',
