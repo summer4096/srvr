@@ -62,70 +62,60 @@ test('behavior', function (mainTest) {
     return app.get('/')
       .expect(200, 'Hello, World!')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'Hello, World!'.length)
   })
 
   subtest('GET /err', function (app) {
     return app.get('/err')
       .expect(500, 'it is broken :(')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'it is broken :('.length)
   })
 
   subtest('GET /bradbury', function (app) {
     return app.get('/bradbury')
       .expect(451, 'sweet reference, bro')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'sweet reference, bro'.length)
   })
 
   subtest('GET /hello', function (app) {
     return app.get('/hello')
       .expect(200, 'Hellooooo!')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'Hellooooo!'.length)
   })
 
   subtest('GET /return/500', function (app) {
     return app.get('/return/500')
       .expect(500, 'it is broken :(')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'it is broken :('.length)
   })
 
   subtest('GET /return/404', function (app) {
     return app.get('/return/404')
       .expect(404, 'Not Found')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'Not Found'.length)
   })
 
   subtest('GET /return/makething', function (app) {
     return app.get('/return/makething')
       .expect(201, 'makething')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'makething'.length)
   })
 
   subtest('GET /src/index.js', function (app) {
     return app.get('/src/index.js')
       .expect(200, /module\.exports/)
       .expect('Content-Type', 'application/javascript')
-      .expect('Content-Length', /^[0-9]+$/)
   })
 
   subtest('GET /api/random', function (app) {
     return app.get('/api/random')
       .expect(200, /^{"rand":0\.[0-9]+}$/)
       .expect('Content-Type', 'application/json')
-      .expect('Content-Length', /^[0-9]+$/)
   })
 
   subtest('GET /fancy/person', function (app) {
     return app.get('/fancy/person')
       .expect(200, '<b>What\'s up, person?</b>')
       .expect('Content-Type', 'text/html')
-      .expect('Content-Length', '<b>What\'s up, person?</b>'.length)
   })
 
   subtest('GET /google', function (app) {
@@ -138,7 +128,6 @@ test('behavior', function (mainTest) {
     return app.get('/cookies')
       .expect(200, 'no cookies')
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', 'no cookies'.length)
       .expect('Set-Cookie', 'SecretValue=1')
   })
 
@@ -147,7 +136,6 @@ test('behavior', function (mainTest) {
       .set('Cookie', 'SecretValue=5')
       .expect(200, '{"SecretValue":"5"}')
       .expect('Content-Type', 'application/json')
-      .expect('Content-Length', '{"SecretValue":"5"}'.length)
       .expect('Set-Cookie', 'SecretValue=6')
   })
 
@@ -155,7 +143,6 @@ test('behavior', function (mainTest) {
     return app.get('/readme')
       .expect(200, readme)
       .expect('Content-Type', 'text/x-markdown; charset=UTF-8')
-      .expect('Content-Length', readme.length)
   })
 
   subtest('GET /readme-download', function (app) {
@@ -163,14 +150,12 @@ test('behavior', function (mainTest) {
       .expect(200, readme)
       .expect('Content-Type', 'text/x-markdown; charset=UTF-8')
       .expect('Content-Disposition', 'attachment; filename="README.md";')
-      .expect('Content-Length', readme.length)
   })
 
   subtest('GET /incomprehensible', function (app) {
     return app.get('/incomprehensible')
       .expect(500, incomprehensibleError.stack)
       .expect('Content-Type', 'text/plain')
-      .expect('Content-Length', incomprehensibleError.stack.length)
   })
 
   mainTest.test('GET /websocket', function (t) {
