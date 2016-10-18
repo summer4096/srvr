@@ -26,7 +26,7 @@ function router (routes, middlewares) {
         if (typeof path === 'string') {
           websocketExactRoutes[path] = responder
         } else if (typeof path === 'object' && typeof path.exec === 'function') {
-          websocketFuzzyRoutes[path] = responder
+          websocketFuzzyRoutes.push(route)
         } else {
           throw new Error('Invalid websocket route: expected first element to be string or regex')
         }

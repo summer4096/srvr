@@ -1,6 +1,6 @@
 {
   "name": "srvr",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a little http server",
   "main": "src/index.js",
   "author": "Tristan Davies <npm@tristan.io>",
