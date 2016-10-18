@@ -10,7 +10,7 @@ srvr([
   ['GET /hello', 'Hellooooo!'],
   ['GET /source.js', function (req, res) {
     res.writeHead(200, {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'text/plain; charset=UTF-8'
     })
     return fs.createReadStream(__filename, 'utf8')
   }],
@@ -22,7 +22,7 @@ srvr([
   ['GET /api', () => [{hello: 'world'}]],
   ['GET /api/random', () => ({ rand: Math.random() })],
   [/^GET \/fancy\/(.+)$/,
-    function (req, res) { res.writeHead(200, {'Content-Type': 'text/html'}) },
+    function (req, res) { res.writeHead(200, {'Content-Type': 'text/html; charset=UTF-8'}) },
     (req) => `<b>What's up, ${req.params[0]}?</b>`
   ],
   ['GET /google', srvr.redirect('https://google.com/')],

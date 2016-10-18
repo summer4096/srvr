@@ -145,7 +145,7 @@ function consume (item, req, res, codeRoutes, callback, i, err, result) {
       if (type === 'string') item = new Buffer(item, 'utf8')
       if (!res.headersSent) {
         res.writeHead(res.statusCode || 200, {
-          'Content-Type': res.getHeader('Content-Type') || 'text/plain'
+          'Content-Type': res.getHeader('Content-Type') || 'text/plain; charset=UTF-8'
         })
       }
       res.end(item, callback)
@@ -171,7 +171,7 @@ function consume (item, req, res, codeRoutes, callback, i, err, result) {
     } else if (type === 'object') {
       var json = JSON.stringify(item)
       if (!res.headersSent) {
-        res.setHeader('Content-Type', 'application/json')
+        res.setHeader('Content-Type', 'application/json; charset=UTF-8')
       }
       next(null, json)
     }
@@ -198,8 +198,7 @@ function sendError (req, res, err, codeRoutes, code, message) {
   } else {
     if (!res.headersSent) {
       res.writeHead(code, {
-        'Content-Type': 'text/plain',
-        'Content-Length': message.length
+        'Content-Type': 'text/plain; charset=UTF-8'
       })
     }
     res.end(message)

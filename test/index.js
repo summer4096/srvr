@@ -30,7 +30,7 @@ test('behavior', function (mainTest) {
     ['GET /api', {hello: 'world'}],
     ['GET /api/random', function () { return { rand: Math.random() } }],
     [/^GET \/fancy\/(.+)$/,
-      srvr.header('Content-Type', 'text/html'),
+      srvr.header('Content-Type', 'text/html; charset=UTF-8'),
       function (req) { return '<b>What\'s up, ' + req.params[0] + '?</b>' }
     ],
     ['GET /google', srvr.redirect('https://google.com/')],
@@ -61,43 +61,43 @@ test('behavior', function (mainTest) {
   subtest('GET /', function (app) {
     return app.get('/')
       .expect(200, 'Hello, World!')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /err', function (app) {
     return app.get('/err')
       .expect(500, 'it is broken :(')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /bradbury', function (app) {
     return app.get('/bradbury')
       .expect(451, 'sweet reference, bro')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /hello', function (app) {
     return app.get('/hello')
       .expect(200, 'Hellooooo!')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /return/500', function (app) {
     return app.get('/return/500')
       .expect(500, 'it is broken :(')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /return/404', function (app) {
     return app.get('/return/404')
       .expect(404, 'Not Found')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /return/makething', function (app) {
     return app.get('/return/makething')
       .expect(201, 'makething')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   subtest('GET /src/index.js', function (app) {
@@ -109,13 +109,13 @@ test('behavior', function (mainTest) {
   subtest('GET /api/random', function (app) {
     return app.get('/api/random')
       .expect(200, /^{"rand":0\.[0-9]+}$/)
-      .expect('Content-Type', 'application/json')
+      .expect('Content-Type', 'application/json; charset=UTF-8')
   })
 
   subtest('GET /fancy/person', function (app) {
     return app.get('/fancy/person')
       .expect(200, '<b>What\'s up, person?</b>')
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'text/html; charset=UTF-8')
   })
 
   subtest('GET /google', function (app) {
@@ -127,7 +127,7 @@ test('behavior', function (mainTest) {
   subtest('GET /cookies', function (app) {
     return app.get('/cookies')
       .expect(200, 'no cookies')
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
       .expect('Set-Cookie', 'SecretValue=1')
   })
 
@@ -135,7 +135,7 @@ test('behavior', function (mainTest) {
     return app.get('/cookies')
       .set('Cookie', 'SecretValue=5')
       .expect(200, '{"SecretValue":"5"}')
-      .expect('Content-Type', 'application/json')
+      .expect('Content-Type', 'application/json; charset=UTF-8')
       .expect('Set-Cookie', 'SecretValue=6')
   })
 
@@ -155,7 +155,7 @@ test('behavior', function (mainTest) {
   subtest('GET /incomprehensible', function (app) {
     return app.get('/incomprehensible')
       .expect(500, incomprehensibleError.stack)
-      .expect('Content-Type', 'text/plain')
+      .expect('Content-Type', 'text/plain; charset=UTF-8')
   })
 
   mainTest.test('GET /websocket', function (t) {
