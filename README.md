@@ -1,5 +1,7 @@
 # srvr
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/devTristan/srvr.svg)](https://greenkeeper.io/)
+
 a little http server
 
  * everything express does
