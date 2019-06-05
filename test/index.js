@@ -103,7 +103,7 @@ test('behavior', function (mainTest) {
   subtest('GET /src/index.js', function (app) {
     return app.get('/src/index.js')
       .expect(200, /module\.exports/)
-      .expect('Content-Type', 'application/javascript')
+      .expect('Content-Type', 'application/javascript; charset=UTF-8')
   })
 
   subtest('GET /api/random', function (app) {
@@ -142,13 +142,13 @@ test('behavior', function (mainTest) {
   subtest('GET /readme', function (app) {
     return app.get('/readme')
       .expect(200, readme)
-      .expect('Content-Type', 'text/x-markdown; charset=UTF-8')
+      .expect('Content-Type', 'text/markdown; charset=UTF-8')
   })
 
   subtest('GET /readme-download', function (app) {
     return app.get('/readme-download')
       .expect(200, readme)
-      .expect('Content-Type', 'text/x-markdown; charset=UTF-8')
+      .expect('Content-Type', 'text/markdown; charset=UTF-8')
       .expect('Content-Disposition', 'attachment; filename="README.md";')
   })
 
